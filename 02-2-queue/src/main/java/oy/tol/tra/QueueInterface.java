@@ -1,7 +1,7 @@
 package oy.tol.tra;
 
 /**
- * A generic interface to queue class. Queues work following 
+ * A generic interface to queue class. Queues work following
  * the first-in-first-out principle.
  * Students: Implement this interface in a separate <code>QueueImplementation.java</code> file.
  *           No implementation in this file!!
@@ -13,7 +13,7 @@ public interface QueueInterface<E> {
     @return The number of elements the queue can currently hold.
     */
    public int capacity();
-   
+
    /**
     * Add an element to the queue.
     * @param element The element to add, must not be null.
