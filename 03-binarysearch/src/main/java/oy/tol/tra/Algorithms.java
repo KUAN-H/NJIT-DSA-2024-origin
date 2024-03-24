@@ -8,33 +8,25 @@ public class Algorithms {
     }
 
     public static <T extends Comparable<T>> void sort(T[] array) {
-        int currentIndex = 0;
-        while (currentIndex < array.length - 1) {
-            int innerIndex = 0;
-            while (innerIndex < array.length - currentIndex - 1) {
-                if (array[innerIndex].compareTo(array[innerIndex + 1]) > 0) {
-                    swap(array, innerIndex, innerIndex + 1);
+        for (int i = 0; i < array.length - 1; i++) {
+            for (int j = 0; j < array.length - i - 1; j++) {
+                if (array[j].compareTo(array[j + 1]) > 0) {
+                    swap(array, j, j + 1);
                 }
-                innerIndex++;
             }
-            currentIndex++;
         }
-
     }
-
-
 
     public static <T> void reverse(T[] array) {
-        int startIndex = 0;
-        int endIndex = array.length - 1;
-        for (; startIndex < endIndex; startIndex++, endIndex--) {
-            swap(array, startIndex, endIndex);
+        for (int i = 0, j = array.length - 1; i < j; i++, j--) {
+            swap(array, i, j);
         }
     }
-    public static <T extends Comparable<T>> int binarySearch(T aValue, T[] fromArray, int fromIndex, int toIndex) {
+
+    public static <T extends Comparable<T>> int binarySearch(T value, T[] array, int fromIndex, int toIndex) {
         while (fromIndex <= toIndex) {
             int mid = fromIndex + (toIndex - fromIndex) / 2;
-            int compareResult = aValue.compareTo(fromArray[mid]);
+            int compareResult = value.compareTo(array[mid]);
             if (compareResult == 0) {
                 return mid;
             } else if (compareResult < 0) {
@@ -45,6 +37,7 @@ public class Algorithms {
         }
         return -1;
     }
+
     public static <T extends Comparable<T>> void fastSort(T[] array) {
         quickSort(array, 0, array.length - 1);
     }
@@ -69,5 +62,5 @@ public class Algorithms {
         swap(array, i + 1, high);
         return i + 1;
     }
-
 }
+
