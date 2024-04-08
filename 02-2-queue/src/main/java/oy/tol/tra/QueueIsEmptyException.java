@@ -8,6 +8,7 @@ public class QueueIsEmptyException extends RuntimeException {
      * @param message The explanation for the exception.
      */
     public QueueIsEmptyException(String message) {
+
         super(message);
     }
 }

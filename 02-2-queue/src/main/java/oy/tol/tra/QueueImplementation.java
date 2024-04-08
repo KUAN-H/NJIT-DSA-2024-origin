@@ -1,27 +1,37 @@
 package oy.tol.tra;
 
-public class QueueImplementation<E> implements QueueInterface<E>{
-    private Object[] itemArray;
+public class QueueImplementation<E> implements QueueInterface<E> {
+    private Object[] elements;
     private int capacity;
     private int size = 0;
-    private int head = 0;
-    private int tail = 0;
+    private int headIndex = 0;
+    private int tailIndex = -1;
+    private static final int DEFAULT_CAPACITY = 10;
 
-    public QueueImplementation() {
-
+    /**
+     * Allocates a queue with a default capacity.
+     *
+     */
+    public QueueImplementation() throws QueueAllocationException {
+        capacity = DEFAULT_CAPACITY;
+        elements = new Object[DEFAULT_CAPACITY];
     }
-    public QueueImplementation(int capacity) {
+
+    /**
+     * @param capacity The capacity of the queue.
+     * @throws QueueAllocationException If you cannot allocate room for the internal array.
+     */
+    public QueueImplementation(int capacity) throws QueueAllocationException {
+        if (capacity < 2) {
+            throw new QueueAllocationException("Capacity is too small!");
+        }
         this.capacity = capacity;
-        this.itemArray = (E[]) new Object[capacity];
-        this.head = 0;
-        this.tail = 0;
-        this.size = 0;
+        elements = new Object[capacity];
     }
-
 
     @Override
     public int capacity() {
-        return capacity;
+        return this.capacity;
     }
 
     @Override
@@ -30,22 +40,22 @@ public class QueueImplementation<E> implements QueueInterface<E>{
             throw new NullPointerException("Cannot enqueue null element.");
         }
         if (size == capacity) {
-            try {
-                int newCapacity = 2 * capacity;
-                Object[] newArray = new Object[newCapacity];
-                for (int i = 0; i < size; i++) {
-                    newArray[i] = itemArray[(head + i) % capacity];
-                }
-                itemArray = newArray;
-                head = 0;
-                tail = size;
-                capacity = newCapacity;
-            } catch (OutOfMemoryError e) {
-                throw new QueueAllocationException("Cannot allocate more room for the queue.");
+            Object[] newArray = new Object[this.capacity * 2 + 1];
+            int sourceIndex = headIndex;
+            int destinationIndex = 0;
+            int loopCount = size;
+            while (loopCount-- > 0) {
+                newArray[destinationIndex++] = elements[sourceIndex];
+                sourceIndex = (sourceIndex + 1) % capacity;
             }
+            headIndex = 0;
+            tailIndex = destinationIndex - 1;
+            elements = newArray;
+            capacity = capacity * 2 + 1;
         }
-        itemArray[tail] = element;
-        tail = (tail + 1) % capacity;
+
+        tailIndex = (tailIndex + 1) % capacity;
+        elements[tailIndex] = element;
         size++;
     }
 
@@ -54,19 +64,20 @@ public class QueueImplementation<E> implements QueueInterface<E>{
         if (isEmpty()) {
             throw new QueueIsEmptyException("Queue is empty");
         }
-        E element = (E) itemArray[head];
-        itemArray[head] = null;
-        head = (head + 1) % capacity;
+        E element = element();
+        elements[headIndex] = null;
+        headIndex = (headIndex + 1) % capacity;
         size--;
         return element;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E element() throws QueueIsEmptyException {
-        if (size == 0) {
-            throw new QueueIsEmptyException("Queue is empty.");
+        if (isEmpty()) {
+            throw new QueueIsEmptyException("Queue is empty");
         }
-        return (E) itemArray[head];
+        return (E) elements[headIndex];
     }
 
     @Override
@@ -82,23 +93,22 @@ public class QueueImplementation<E> implements QueueInterface<E>{
     @Override
     public void clear() {
         for (int i = 0; i < capacity; i++) {
-            itemArray[i] = null;
+            elements[i] = null;
         }
-        this.head = 0;
-        this.tail = 0;
-        this.size = 0;
+        headIndex = 0;
+        tailIndex = -1;
+        size = 0;
     }
 
     @Override
     public String toString() {
-        if (size == 0) {
-            return "[]";
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (int i = 0; i < size; i++) {
-            builder.append(itemArray[(head + i) % capacity].toString());
-            if (i < size - 1) {
+        StringBuilder builder = new StringBuilder("[");
+        int currentIndex = headIndex;
+        int loopCount = size;
+        while (loopCount-- > 0) {
+            builder.append(elements[currentIndex].toString());
+            currentIndex = (currentIndex + 1) % capacity;
+            if (loopCount != 0) {
                 builder.append(", ");
             }
         }
@@ -106,4 +116,3 @@ public class QueueImplementation<E> implements QueueInterface<E>{
         return builder.toString();
     }
 }
-

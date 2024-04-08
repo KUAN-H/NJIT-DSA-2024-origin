@@ -3,7 +3,7 @@ package oy.tol.tra;
 /**
  * Class Pair defines a key-value -pair of objects where each key has an
  * associated value.
- * 
+ *
  * Keys must implement the Comparable interface. Equality is determined by
  * comparing keys.
  */
@@ -11,9 +11,11 @@ public class Pair<K extends Comparable<K>, V> implements Comparable<Pair<K, V>> 
    private K key;
    private V value;
 
-   public Pair(K key, V value) {
-      this.key = key;
-      this.value = value;
+
+
+   public Pair(Object key, Object value) {
+      this.key = (K) key;
+      this.value = (V) value;
    }
 
    public K getKey() {

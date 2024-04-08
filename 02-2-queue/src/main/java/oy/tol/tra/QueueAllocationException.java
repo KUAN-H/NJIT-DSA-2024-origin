@@ -8,6 +8,7 @@ public class QueueAllocationException extends RuntimeException {
     * @param message The explanation for the exception.
    */
    public QueueAllocationException(String message) {
+
       super(message);
    }   
 }
