@@ -13,6 +13,7 @@ public class StackAllocationException extends RuntimeException {
     * @param message The message visible to developer or user.
     */
    public StackAllocationException(String message) {
+
       super(message);
    } 
 }
